@@ -1,2 +1,4 @@
-# GPT-dev__Andrej-course
-This is a repo for storing the relevant original files and my notes, etc. from following Andrej Karparthy's Zero to Hero course.
+# GPT-dev__Andrej-course -- ChatGPT links:
+---
+26 July 2024
+- Code Explanation Summary - https://chatgpt.com/c/06bc8b26-d61c-4ed3-8f29-5c141526b8d3
