@@ -101,7 +101,7 @@ class MultiHeadAttention(nn.Module):
 
     def forward(self, x):
         out = torch.cat([h(x) for h in self.heads], dim=-1)
-        out = self.dropout(self.proj(out))
+        out = self.dropout(self.proj(out)) # projection back into the residual pathway
         return out
 
 class FeedFoward(nn.Module):
@@ -110,9 +110,10 @@ class FeedFoward(nn.Module):
     def __init__(self, n_embd):
         super().__init__()
         self.net = nn.Sequential(
-            nn.Linear(n_embd, 4 * n_embd),
+            nn.Linear(n_embd, 4 * n_embd), # both this and 2 lines below had been multipied by 4 based on FFN implementation in the
+                                           # paper "Attention is All you need"
             nn.ReLU(),
-            nn.Linear(4 * n_embd, n_embd),
+            nn.Linear(4 * n_embd, n_embd), # this is the projection layer going back into the residual pathway
             nn.Dropout(dropout),
         )
 
@@ -132,8 +133,8 @@ class Block(nn.Module):
         self.ln2 = nn.LayerNorm(n_embd)
 
     def forward(self, x):
-        x = x + self.sa(self.ln1(x))
-        x = x + self.ffwd(self.ln2(x))
+        x = x + self.sa(self.ln1(x)) # residual
+        x = x + self.ffwd(self.ln2(x)) # from feedforward
         return x
 
 class GPTLanguageModel(nn.Module):
@@ -144,7 +145,7 @@ class GPTLanguageModel(nn.Module):
                 # not just encoding identity of token here. but also its position!
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)  
-        self.blocks = nn.Sequential(*[Block(n_embd, n_head=n_head) for _ in range(n_layer)])
+        self.blocks = nn.Sequential(*[Block(n_embd, n_head=n_head) for _ in range(n_layer)]) # multiple blocks can be seen here
         self.ln_f = nn.LayerNorm(n_embd) # final layer norm
         self.lm_head = nn.Linear(n_embd, vocab_size) # short for language model head 
 
