@@ -127,7 +127,7 @@ class Block(nn.Module):
         super().__init__()
         head_size = n_embd // n_head
         self.sa = MultiHeadAttention(n_head, head_size) # multi-head attention class initialisation
-        self.ffwd = FeedFoward(n_embd)
+        self.ffwd = FeedFoward(n_embd) # notice how this occurs after attention
         self.ln1 = nn.LayerNorm(n_embd)
         self.ln2 = nn.LayerNorm(n_embd)
 
